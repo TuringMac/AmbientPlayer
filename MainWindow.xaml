@@ -5,8 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AmbientPlayer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Ambient player" Height="450" Width="800" Closing="Window_Closing">
     <Grid>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Content="Layers" />
+        <Label Content="Tracks" Grid.Column="1" />
+        <ListBox x:Name="lstLayers" Grid.Row="1">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Margin="5">
+                        <TextBlock FontSize="16" Text="{Binding Path=Name}" HorizontalAlignment="Center" />
+                        <Label>Distance</Label>
+                        <Slider Value="{Binding Path=Distance, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="1000" LargeChange="50" />
+                        <Label>Quantity</Label>
+                        <Slider Value="{Binding Path=Quantity, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="100" LargeChange="5" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox x:Name="lstPlaylist" Grid.Row="1" Grid.Column="1">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Margin="5">
+                        <Image Width="100" Height="75" Source="{Binding Path=ImagePath}" />
+                        <TextBlock FontSize="16" Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" />
+                        <TextBlock FontSize="16" Text="{Binding Path=Company, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Content="Play/Pause" Command="{Binding PlayPause}" Grid.Row="2"/>
     </Grid>
 </Window>
