@@ -49,14 +49,10 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <ListBox x:Name="lstPlaylist" Grid.Row="1" Grid.Column="1">
+        <ListBox x:Name="lstPlaylist" ItemsSource="{Binding ElementName=lstLayers, Path=SelectedItem.Files}" Grid.Row="1" Grid.Column="1">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Margin="5">
-                        <Image Width="100" Height="75" Source="{Binding Path=ImagePath}" />
-                        <TextBlock FontSize="16" Text="{Binding Path=Title, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" />
-                        <TextBlock FontSize="16" Text="{Binding Path=Company, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" />
-                    </StackPanel>
+                    <Label Content="{Binding}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
