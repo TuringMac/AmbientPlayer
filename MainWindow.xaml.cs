@@ -21,7 +21,7 @@ namespace AmbientPlayer
     /// </summary>
     public partial class MainWindow : Window
     {
-        MediaPlayer player = new();
+        Dictionary<Layer, MediaPlayer> Players { get; } = new();
 
         public MainWindow()
         {
@@ -30,23 +30,46 @@ namespace AmbientPlayer
             DataContext = vm;
             lstLayers.ItemsSource = vm.Layers;
             vm.Play += Vm_Play;
-
-            player.MediaOpened += Player_MediaOpened;
-            player.MediaFailed += Player_MediaFailed;
+            vm.Start();
         }
 
         private void Vm_Play(Layer layer)
         {
+            MediaPlayer player;
+            if (!Players.ContainsKey(layer))
+            {
+                player = new();
+                player.MediaOpened += Player_MediaOpened;
+                player.MediaFailed += Player_MediaFailed;
+                player.MediaEnded += Player_MediaEnded;
+                Players.Add(layer, player);
+            }
+
+            player = Players[layer];
             player.Stop();
+            layer.Playing();
             string filepath = layer.Files[new Random().Next(layer.Files.Count)];
-            player.Volume = (1000 - layer.Distance) / 1000.0;
+            player.Volume = (1001 - layer.Distance) / 1000.0;
             player.Open(new Uri(filepath, UriKind.Absolute));
+        }
+
+        private void Player_MediaEnded(object sender, EventArgs e)
+        {
+            if (sender is MediaPlayer player)
+                foreach (var pair in Players.Where((lp) => lp.Value == player))
+                {
+                    player.Close();
+                    pair.Key.Played();
+                }
         }
 
         private void Player_MediaOpened(object sender, EventArgs e)
         {
-            player.Play();
-            Debug.WriteLine($"[{DateTime.Now.ToLongTimeString()}] Play:{player.Source?.OriginalString} Volume:{player.Volume}");
+            if (sender is MediaPlayer player)
+            {
+                player.Play();
+                Debug.WriteLine($"[{DateTime.Now.ToLongTimeString()}] Play:{player.Source?.OriginalString} Volume:{player.Volume}");
+            }
         }
 
         private void Player_MediaFailed(object sender, ExceptionEventArgs e)
@@ -56,8 +79,11 @@ namespace AmbientPlayer
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            player.Stop();
-            player.Close();
+            foreach (var player in Players.Values)
+            {
+                player.Stop();
+                player.Close();
+            }
         }
     }
 }

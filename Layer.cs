@@ -11,6 +11,14 @@ using System.Windows.Threading;
 
 namespace AmbientPlayer
 {
+    public enum LayerStatus
+    {
+        None,
+        Waiting,
+        Ready,
+        Playing
+    }
+
     public class Layer : INotifyPropertyChanged
     {
         public TimeSpan MAX_DELAY { get; } = TimeSpan.FromMinutes(10);
@@ -28,6 +36,7 @@ namespace AmbientPlayer
                 }
             }
         }
+
         uint _Distance = 500;
         public uint Distance
         {
@@ -56,10 +65,41 @@ namespace AmbientPlayer
                     {
                         tmrReady.Stop();
                     }
+                    else if (Quantity == 100) // TODO: pauseless play
+                    {
+                        TmrReady_Tick(tmrReady, EventArgs.Empty);
+                    }
                     else
                     {
-                        tmrReady.Interval = MAX_DELAY / Quantity;
+                        tmrReady.Interval = new TimeSpan(MAX_DELAY.Ticks / Quantity);
+                        tmrReady.Stop();
                         tmrReady.Start();
+                    }
+                }
+            }
+        }
+
+        LayerStatus _Status = LayerStatus.None;
+        public LayerStatus Status
+        {
+            get => _Status;
+            set
+            {
+                if (_Status != value)
+                {
+                    _Status = value;
+                    NotifyPropertyChanged();
+                    switch (_Status)
+                    {
+                        case LayerStatus.Waiting:
+                            if (Quantity < 100)
+                                tmrReady.Start();
+                            else
+                                TmrReady_Tick(tmrReady, EventArgs.Empty);
+                            break;
+                        case LayerStatus.Ready:
+                            ReadyToPlay?.Invoke(this, EventArgs.Empty);
+                            break;
                     }
                 }
             }
@@ -89,12 +129,22 @@ namespace AmbientPlayer
         {
             tmrReady.Interval = TimeSpan.FromMinutes(1);
             tmrReady.Tick += TmrReady_Tick;
-            tmrReady.Start();
         }
 
         private void TmrReady_Tick(object sender, EventArgs e)
         {
-            ReadyToPlay?.Invoke(this, EventArgs.Empty);
+            tmrReady.Stop();
+            Status = LayerStatus.Ready;
+        }
+
+        public void Playing()
+        {
+            Status = LayerStatus.Playing;
+        }
+
+        public void Played()
+        {
+            Status = LayerStatus.Waiting;
         }
     }
 }
