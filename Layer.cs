@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
@@ -19,9 +20,10 @@ namespace AmbientPlayer
         Playing
     }
 
+    [Serializable]
     public class Layer : INotifyPropertyChanged
     {
-        public TimeSpan MAX_DELAY { get; } = TimeSpan.FromMinutes(10);
+        public readonly TimeSpan MAX_DELAY = TimeSpan.FromMinutes(10);
 
         string _Name = "";
         public string Name
@@ -51,7 +53,7 @@ namespace AmbientPlayer
             }
         }
 
-        uint _Quantity = 50;
+        uint _Quantity = 0;
         public uint Quantity
         {
             get => _Quantity;
@@ -80,6 +82,7 @@ namespace AmbientPlayer
         }
 
         LayerStatus _Status = LayerStatus.None;
+        [JsonIgnore]
         public LayerStatus Status
         {
             get => _Status;
@@ -107,6 +110,19 @@ namespace AmbientPlayer
 
         DispatcherTimer tmrReady = new DispatcherTimer();
 
+        // TODO: Dirty hack
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [JsonPropertyName("Files")]
+        public List<string> SerializeFiles
+        {
+            get => Files.ToList();
+            set
+            {
+                foreach (var path in value)
+                    Files.Add(path);
+            }
+        }
+        [JsonIgnore]
         public ObservableCollection<string> Files { get; } = new ObservableCollection<string>();
 
         public event EventHandler ReadyToPlay;

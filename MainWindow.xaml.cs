@@ -22,11 +22,12 @@ namespace AmbientPlayer
     public partial class MainWindow : Window
     {
         Dictionary<Layer, MediaPlayer> Players { get; } = new();
+        MainVM vm;
 
         public MainWindow()
         {
             InitializeComponent();
-            var vm = new MainVM();
+            vm = new MainVM();
             DataContext = vm;
             lstLayers.ItemsSource = vm.Layers;
             vm.Play += Vm_Play;
@@ -47,8 +48,12 @@ namespace AmbientPlayer
 
             player = Players[layer];
             player.Stop();
+            player.Close();
+            int index = new Random().Next(layer.Files.Count);
+            if (index >= layer.Files.Count || index < 0) // Handle emply Layers
+                return;
+            string filepath = layer.Files[index];
             layer.Playing();
-            string filepath = layer.Files[new Random().Next(layer.Files.Count)];
             player.Volume = (1001 - layer.Distance) / 1000.0;
             player.Open(new Uri(filepath, UriKind.Absolute));
         }
@@ -84,6 +89,7 @@ namespace AmbientPlayer
                 player.Stop();
                 player.Close();
             }
+            vm.Save(); // TODO refactor to command may be?
         }
     }
 }

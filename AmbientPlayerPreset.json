@@ -1,0 +1,40 @@
+[
+  {
+    "Name": "Radio",
+    "Distance": 930,
+    "Quantity": 100,
+    "Files": [
+      "D:\\UserData\\Desktop\\Layers\\Bar\\Music\\Splin-VihodaNet.mp3"
+    ]
+  },
+  {
+    "Name": "Kitchen",
+    "Distance": 500,
+    "Quantity": 80,
+    "Files": [
+      "D:\\UserData\\Desktop\\Layers\\Bar\\Ambient\\kitchen_1.mp3",
+      "D:\\UserData\\Desktop\\Layers\\Bar\\Ambient\\kitchen_2.mp3",
+      "D:\\UserData\\Desktop\\Layers\\Bar\\Ambient\\kitchen_3.mp3",
+      "D:\\UserData\\Desktop\\Layers\\Bar\\Ambient\\kitchen_4.mp3"
+    ]
+  },
+  {
+    "Name": "Dialogs",
+    "Distance": 300,
+    "Quantity": 30,
+    "Files": [
+      "D:\\UserData\\Desktop\\Layers\\Bar\\Random\\idle_6.mp3",
+      "D:\\UserData\\Desktop\\Layers\\Bar\\Random\\idle_7.mp3",
+      "D:\\UserData\\Desktop\\Layers\\Bar\\Random\\idle_8.mp3",
+      "D:\\UserData\\Desktop\\Layers\\Bar\\Random\\idle_9.mp3",
+      "D:\\UserData\\Desktop\\Layers\\Bar\\Random\\idle_10.mp3",
+      "D:\\UserData\\Desktop\\Layers\\Bar\\Random\\idle_11.mp3"
+    ]
+  },
+  {
+    "Name": "Rare events",
+    "Distance": 200,
+    "Quantity": 20,
+    "Files": []
+  }
+]
