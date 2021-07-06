@@ -25,7 +25,7 @@ namespace AmbientPlayer
     {
         public readonly TimeSpan MAX_DELAY = TimeSpan.FromMinutes(10);
 
-        string _Name = "";
+        string _Name = "New layer";
         public string Name
         {
             get => _Name;
@@ -94,6 +94,9 @@ namespace AmbientPlayer
                     NotifyPropertyChanged();
                     switch (_Status)
                     {
+                        case LayerStatus.None:
+                            tmrReady.Stop();
+                            break;
                         case LayerStatus.Waiting:
                             if (Quantity < 100)
                                 tmrReady.Start();
@@ -143,8 +146,18 @@ namespace AmbientPlayer
 
         public Layer()
         {
+            Files.CollectionChanged += Files_CollectionChanged;
             tmrReady.Interval = TimeSpan.FromMinutes(1);
             tmrReady.Tick += TmrReady_Tick;
+        }
+
+        private void Files_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (Files.Count < 1)
+                Status = LayerStatus.None; // Stop play when all tracks removed
+
+            if (e.NewItems != null && e.NewItems.Count == Files.Count)
+                Played(); // Run layer after first added track
         }
 
         private void TmrReady_Tick(object sender, EventArgs e)
