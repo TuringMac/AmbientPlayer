@@ -27,7 +27,7 @@ namespace AmbientPlayer
         public MainWindow()
         {
             InitializeComponent();
-            vm = new MainVM();
+            vm = new MainVM(new FileService());
             DataContext = vm;
             lstLayers.ItemsSource = vm.Layers;
             vm.Play += Vm_Play;

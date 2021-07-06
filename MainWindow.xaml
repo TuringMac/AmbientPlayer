@@ -13,12 +13,15 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition />
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Label Content="Layers" />
-        <Label Content="Tracks" Grid.Column="1" />
-        <ListBox x:Name="lstLayers" Grid.Row="1">
+        <Button Command="{Binding SaveCommand}">Save</Button>
+        <Button Command="{Binding LoadCommand}" Grid.Column="1">Load</Button>
+        <Label Content="Layers" Grid.Row="1"/>
+        <Label Content="Tracks" Grid.Column="1" Grid.Row="1"/>
+        <ListBox x:Name="lstLayers" Grid.Row="2">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Expander>
@@ -49,13 +52,13 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <ListBox x:Name="lstPlaylist" ItemsSource="{Binding ElementName=lstLayers, Path=SelectedItem.Files}" Grid.Row="1" Grid.Column="1">
+        <ListBox x:Name="lstPlaylist" ItemsSource="{Binding ElementName=lstLayers, Path=SelectedItem.Files}" Grid.Row="2" Grid.Column="1">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Label Content="{Binding}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Button Content="Play/Pause" Command="{Binding PlayPause}" Grid.Row="2"/>
+        <Button Content="Play/Pause" Command="{Binding PlayPause}" Grid.Row="3"/>
     </Grid>
 </Window>
